@@ -1,0 +1,44 @@
+{{/*CC #1 -- Command: gStart*/}}
+
+{{/*Trigger Type: Command (mention/cmd prefix)*/}}
+{{/*Trigger: /gStart -- Case Insensitive*/}}
+{{/*Name: Start Betting Rounds [Degen-Skipper]*/}}
+{{/*Command Enabled: true*/}}
+
+{{$args := parseArgs 2 "Proper way of using is /gStart Rounds Bet -- Ensure both fields are only numbers, ex: /gStart 5 100\nIf you continue to need help, please contact one of the <@&1075321446362001451>." (carg "int" "rounds of skips") (carg "int" "AI Cores to bet")}}
+{{$rAct := toInt (dbGet 000 "rAct").Value}}
+
+{{if in .Member.Roles 1075325321768874004}}
+  {{if eq $rAct 0}}
+    {{if $args.IsSet 0}}
+      {{$rAmt := ($args.Get 0)}}
+      {{$rBet := ($args.Get 1)}}
+      {{$rSkip := .User}}
+      {{$rMsg := sendMessageNoEscapeRetID nil (cembed "title" (print "(G)ambling (A)ddiction (Y)acht Official Betting Round Beginning!!!") "description" (print "LADIES & GENTLEMEN -- A NEW SKIPPER HAS ENTERED THE ARENA!!!\n" .User.Mention " has graciously offered up " $rAmt " Rounds of Skips for our betting pleasure!\n\nIf you decide to join, you'll have 60 seconds to place your bet of " $rBet " AI Cores once the round begins. All betting must take place in your private room, not in " .Channel.Mention "!\n\nPlease remember to keep track of who you owe and how much you owe them -- Do NOT FORGET to pay in-game or you will be removed from future games! Best of luck, and please have fun!\n\n\nPress press the Check-Mark below to join in the upcoming Betting Rounds!"))}}
+      {{addMessageReactions nil $rMsg ":white_check_mark:"}}
+
+      {{/*Saving MessageID, Round Amount, and Bet Amount to Database*/}}
+      {{dbSet 000 "rAct" (str 1)}}
+      {{dbSet 100 "rMsg" (str $rMsg)}}
+      {{dbSet 101 "rAmt" (str $rAmt)}}
+      {{dbSet 102 "rBet" (str $rBet)}}
+      {{dbSet 103 "rSkip" (str $rSkip)}}
+
+      {{/*Setting Skipper Role, Initializing*/}}
+      {{giveRoleID .Member.User 1075329253488463883}}
+    {{else}}
+      {{sendMessageNoEscape nil "Proper way of using is /gStart Rounds Bet -- Ensure both fields are only numbers, ex: /gStart 5 100\nIf you continue to need help, please contact one of the <@&1075321446362001451>."}}
+    {{end}}
+  {{else}}
+    There is already a Betting Round active.
+  {{end}}
+{{else}}
+  {{sendMessageNoEscape nil "You are not a <@&1075325321768874004> yet. Please contact one of the <@&1075321446362001451> to have your account properly set-up."}}
+{{end}}
+
+
+
+{{/*Channel/User role restrictions*/}}
+{{/*Ignore the roles in the following list: None Selected*/}}
+{{/*Only run in the following channels: #admin, #lounge*/}}
+{{/*Output errors as a command response*/}}
