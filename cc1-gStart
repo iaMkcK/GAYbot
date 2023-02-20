@@ -5,6 +5,10 @@
 {{/*Name: Start Betting Rounds [Degen-Skipper]*/}}
 {{/*Command Enabled: true*/}}
 
+
+
+{{/*Code Start*/}}
+
 {{$args := parseArgs 2 "Proper way of using is /gStart Rounds Bet -- Ensure both fields are only numbers, ex: /gStart 5 100\nIf you continue to need help, please contact one of the <@&1075321446362001451>." (carg "int" "rounds of skips") (carg "int" "AI Cores to bet")}}
 {{$rAct := toInt (dbGet 000 "rAct").Value}}
 
@@ -35,6 +39,8 @@
 {{else}}
   {{sendMessageNoEscape nil "You are not a <@&1075325321768874004> yet. Please contact one of the <@&1075321446362001451> to have your account properly set-up."}}
 {{end}}
+
+{{/*Code End*/}}
 
 
 
